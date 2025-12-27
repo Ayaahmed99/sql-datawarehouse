@@ -1,0 +1,54 @@
+/*
+===============================================================================
+Script Name : DataWarehouse Initialization Script
+Purpose     :
+This script recreates the DataWarehouse database and prepares it for a layered
+data warehouse architecture using the Bronze, Silver, and Gold schemas.
+
+- Bronze schema: Stores raw, unprocessed source data.
+- Silver schema: Contains cleaned, validated, and transformed data.
+- Gold schema  : Holds aggregated, analytics-ready data for reporting.
+
+This script is intended for development, testing, or initial deployment
+scenarios.
+
+Warnings     :
+- This script will permanently DROP the existing DataWarehouse database
+  if it already exists.
+- All data, tables, schemas, and database objects will be irreversibly lost.
+- All active connections will be forcefully terminated using
+  SINGLE_USER WITH ROLLBACK IMMEDIATE.
+- Ensure a full database backup exists before running this script.
+- Do NOT execute this script in a production environment without proper
+  approval.
+- Requires sufficient privileges (sysadmin or dbcreator).
+
+===============================================================================
+*/
+
+USE master;
+GO
+
+IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'DataWarehouse')
+BEGIN
+    ALTER DATABASE DataWarehouse 
+    SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+    DROP DATABASE DataWarehouse;
+END;
+GO
+
+CREATE DATABASE DataWarehouse;
+GO
+
+USE DataWarehouse;
+GO
+
+CREATE SCHEMA bronze;
+GO
+
+CREATE SCHEMA silver;
+GO
+
+CREATE SCHEMA gold;
+GO
